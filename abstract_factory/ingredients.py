@@ -13,6 +13,13 @@ class Cheese:
 class Clams:    
     def __init__(self, name): self.name=name;  
     def __str__(self): return self.name
+# Nuevos ingredientes
+class Veggies:
+    def __init__(self, name): self.name=name;
+    def __str__(self): return self.name
+class Pepperoni:
+    def __init__(self, name): self.name=name;
+    def __str__(self): return self.name
 
 # Abstract Factory
 class PizzaIngredientFactory(ABC):
@@ -24,6 +31,11 @@ class PizzaIngredientFactory(ABC):
     def create_cheese(self) -> Cheese: ...
     @abstractmethod
     def create_clam(self) -> Clams: ...
+     # Nuevos métodos abstractos
+    @abstractmethod
+    def create_veggies(self) -> Veggies: ...
+    @abstractmethod
+    def create_pepperoni(self) -> Pepperoni: ...
 
 # Concrete factories
 class NYPizzaIngredientFactory(PizzaIngredientFactory):
@@ -31,9 +43,15 @@ class NYPizzaIngredientFactory(PizzaIngredientFactory):
     def create_sauce(self) -> Sauce:  return Sauce("Marinara Sauce")
     def create_cheese(self) -> Cheese:return Cheese("Reggiano Cheese")
     def create_clam(self) -> Clams:   return Clams("Fresh Clams")
+    # Agrega la implementación de los nuevos métodos
+    def create_veggies(self) -> Veggies: return Veggies("Garlic, Onion, Mushroom, Red Pepper")
+    def create_pepperoni(self) -> Pepperoni: return Pepperoni("Sliced Pepperoni")
 
 class ChicagoPizzaIngredientFactory(PizzaIngredientFactory):
     def create_dough(self) -> Dough:  return Dough("Thick Crust Dough")
     def create_sauce(self) -> Sauce:  return Sauce("Plum Tomato Sauce")
     def create_cheese(self) -> Cheese:return Cheese("Mozzarella Cheese")
     def create_clam(self) -> Clams:   return Clams("Frozen Clams")
+     # Implementación para nuevos ingredientes
+    def create_veggies(self) -> Veggies: return Veggies("Mushroom, Onion, Red Pepper")
+    def create_pepperoni(self) -> Pepperoni: return Pepperoni("Sliced Pepperoni")
