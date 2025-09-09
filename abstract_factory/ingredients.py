@@ -1,10 +1,18 @@
 from abc import ABC, abstractmethod
 
 # Ingredient products
-class Dough:    def __init__(self, name): self.name=name;  def __str__(self): return self.name
-class Sauce:    def __init__(self, name): self.name=name;  def __str__(self): return self.name
-class Cheese:   def __init__(self, name): self.name=name;  def __str__(self): return self.name
-class Clams:    def __init__(self, name): self.name=name;  def __str__(self): return self.name
+class Dough:    
+    def __init__(self, name): self.name=name;  
+    def __str__(self): return self.name
+class Sauce:    
+    def __init__(self, name): self.name=name;  
+    def __str__(self): return self.name
+class Cheese:   
+    def __init__(self, name): self.name=name;  
+    def __str__(self): return self.name
+class Clams:    
+    def __init__(self, name): self.name=name;  
+    def __str__(self): return self.name
 
 # Abstract Factory
 class PizzaIngredientFactory(ABC):
