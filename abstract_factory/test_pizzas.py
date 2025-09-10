@@ -35,14 +35,14 @@ def test_chicago_clam_pizza_has_correct_ingredients():
     assert isinstance(pizza.clam, type(factory.create_clam()))
 
 # Test VeggiePizza de NY
-#def test_ny_veggie_pizza_ingredients():
-#    store = NYPizzaStore()
-#    pizza = store.order_pizza("veggie")
-#    factory = NYPizzaIngredientFactory()
-#    
-#    assert isinstance(pizza.dough, type(factory.create_dough()))
-#    assert isinstance(pizza.sauce, type(factory.create_sauce()))
-#    assert isinstance(pizza.onion, type(factory.create_onion()))
-#    assert isinstance(pizza.garlic, type(factory.create_garlic()))
-#    assert isinstance(pizza.mushroom, type(factory.create_mushroom()))
-#    assert isinstance(pizza.pepper, type(factory.create_pepper()))
+def test_ny_veggie_pizza_ingredients():
+    store = NYPizzaStore()
+    pizza = store.order_pizza("veggie")
+    factory = NYPizzaIngredientFactory()
+    
+    assert isinstance(pizza.dough, type(factory.create_dough()))
+    assert isinstance(pizza.sauce, type(factory.create_sauce()))
+    assert isinstance(pizza.onion, type(factory.create_onion()))
+    assert isinstance(pizza.garlic, type(factory.create_garlic()))
+    assert isinstance(pizza.mushroom, type(factory.create_mushroom()))
+    assert isinstance(pizza.pepper, type(factory.create_pepper()))
