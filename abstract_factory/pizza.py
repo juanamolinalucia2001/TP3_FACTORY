@@ -6,7 +6,7 @@ class Pizza(ABC):
         self.name=name; self.f=ing_factory
         self.dough=None; self.sauce=None; self.cheese=None; self.clam=None
         # Nuevos atributos para los nuevos ingredientes
-        self.veggies=None; self.pepperoni=None
+        self.onion=None; self.pepperoni=None; self.garlic=None; self.pepper=None; self.mushroom=None
     @abstractmethod
     def prepare(self): ...
     def bake(self): print("Bake 25 min at 350")
@@ -29,8 +29,9 @@ class ClamPizza(Pizza):
 class VeggiePizza(Pizza):
     def prepare(self):
         print(f"Preparing {self.name}")
-        self.dough=self.f.create_dough(); self.sauce=self.f.create_sauce(); self.veggies=self.f.create_veggies()
-        print(" ->", self.dough, "/", self.sauce, "/", self.veggies)
+        self.dough=self.f.create_dough(); self.sauce=self.f.create_sauce(); self.onion=self.f.create_onion(); self.garlic=self.f.create_garlic()
+        self.mushroom=self.f.create_mushroom(); self.pepper=self.f.create_pepper()
+        print(" ->", self.dough, "/", self.sauce, "/", self.onion, "/", self.garlic, "/", self.mushroom, "/", self.pepper)
 
 class PepperoniPizza(Pizza):
     def prepare(self):

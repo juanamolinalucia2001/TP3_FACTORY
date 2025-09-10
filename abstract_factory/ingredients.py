@@ -14,7 +14,16 @@ class Clams:
     def __init__(self, name): self.name=name;  
     def __str__(self): return self.name
 # Nuevos ingredientes
-class Veggies:
+class Onion:
+    def __init__(self, name): self.name=name;
+    def __str__(self): return self.name
+class Garlic:
+    def __init__(self, name): self.name=name;
+    def __str__(self): return self.name
+class Mushroom:
+    def __init__(self, name): self.name=name;
+    def __str__(self): return self.name
+class Pepper:
     def __init__(self, name): self.name=name;
     def __str__(self): return self.name
 class Pepperoni:
@@ -33,7 +42,13 @@ class PizzaIngredientFactory(ABC):
     def create_clam(self) -> Clams: ...
      # Nuevos métodos abstractos
     @abstractmethod
-    def create_veggies(self) -> Veggies: ...
+    def create_onion(self) -> Onion: ...
+    @abstractmethod
+    def create_mushroom(self) -> Mushroom: ...
+    @abstractmethod
+    def create_garlic(self) -> Garlic: ...
+    @abstractmethod
+    def create_pepper(self) -> Pepper: ...
     @abstractmethod
     def create_pepperoni(self) -> Pepperoni: ...
 
@@ -44,7 +59,10 @@ class NYPizzaIngredientFactory(PizzaIngredientFactory):
     def create_cheese(self) -> Cheese:return Cheese("Reggiano Cheese")
     def create_clam(self) -> Clams:   return Clams("Fresh Clams")
     # Agrega la implementación de los nuevos métodos
-    def create_veggies(self) -> Veggies: return Veggies("Garlic, Onion, Mushroom, Red Pepper")
+    def create_onion(self) -> Onion: return Onion("Sliced Onions")
+    def create_mushroom(self) -> Mushroom: return Mushroom("Mushroom")
+    def create_garlic(self) -> Garlic: return Garlic("Garlic")
+    def create_pepper(self) -> Pepper: return Pepper("Red Pepper")
     def create_pepperoni(self) -> Pepperoni: return Pepperoni("Sliced Pepperoni")
 
 class ChicagoPizzaIngredientFactory(PizzaIngredientFactory):
@@ -53,5 +71,8 @@ class ChicagoPizzaIngredientFactory(PizzaIngredientFactory):
     def create_cheese(self) -> Cheese:return Cheese("Mozzarella Cheese")
     def create_clam(self) -> Clams:   return Clams("Frozen Clams")
      # Implementación para nuevos ingredientes
-    def create_veggies(self) -> Veggies: return Veggies("Mushroom, Onion, Red Pepper")
+    def create_onion(self) -> Onion: return Onion("Diced Onions")
+    def create_mushroom(self) -> Mushroom: return Mushroom("Mushroom")
+    def create_garlic(self) -> Garlic: return Garlic("Garlic")
+    def create_pepper(self) -> Pepper: return Pepper("Green Pepper")
     def create_pepperoni(self) -> Pepperoni: return Pepperoni("Sliced Pepperoni")
