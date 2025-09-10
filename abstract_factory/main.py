@@ -5,6 +5,7 @@ def main():
     ny.order_pizza("cheese")
     chi.order_pizza("clam")
     ny.order_pizza("veggie")
+    chi.order_pizza("veggie")
     chi.order_pizza("pepperoni")
 
 if __name__ == "__main__":
