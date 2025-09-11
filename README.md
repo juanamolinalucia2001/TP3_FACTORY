@@ -1,134 +1,69 @@
-# Trabajo Práctico: Patrones de Diseño Factory
+# TP3 – Factory Method & Abstract Factory
 
-## 🎯 Introducción y Objetivos
+## Decisiones de Diseño: Extensión del Patrón *Factory Method*
 
-¡Bienvenido/a al trabajo práctico sobre Patrones de Fábrica\! En este ejercicio, aplicarás los conceptos de **Simple Factory**, **Factory Method** y **Abstract Factory** para resolver un problema de acoplamiento en el código de una pizzería en expansión.
+### Problema del *Simple Factory*
+En el enfoque de *Simple Factory*:
+- Toda la creación está centralizada en `SimplePizzaFactory` que usa un `if/else` o `switch` en `create_pizza(kind)`.
+- `PizzaStore` depende directamente de la *factory* y de su método.
+- La *factory* depende de cada producto concreto (`CheesePizza`, `VeggiePizza`, etc.).
 
-El objetivo es que, al finalizar, puedas:
+#### Problemas
+- **Alto acoplamiento**: cada vez que se agrega una pizza nueva hay que modificar el `switch` de la factory.
+- **Violación de OCP** (*Open/Closed Principle*): la factory cambia con cada extensión.
 
-  * **Identificar** los problemas de mantenimiento y rigidez causados por la instanciación directa de objetos.
-  * **Aplicar** los patrones de fábrica para desacoplar el código cliente de las clases concretas.
-  * **Comprender** las diferencias, ventajas y desventajas entre Simple Factory, Factory Method y Abstract Factory.
-  * **Extender** un diseño existente que utiliza estos patrones, respetando principios como el **Open-Closed Principle (OCP)** y el **Dependency Inversion Principle (DIP)**.
-  * **Validar** el comportamiento del diseño a través de pruebas unitarias.
+### Solución
+Con *Factory Method*:
+- La creación se delega a cada tienda concreta, que redefine `create_pizza(kind)` e instancia sus propios productos.
+- El cliente trabaja con la abstracción `PizzaStore`, sin conocer la factory concreta.
+- Cada tienda concreta conoce sólo sus productos.  
+  Ejemplo: el estilo Nueva York es creado en `NYPizzaStore`.
 
------
+#### Beneficios
+- **Menor acoplamiento**: para agregar una nueva variedad, sólo se modifica el `create_pizza` de la tienda correspondiente.
+- **Cumple OCP**: se extiende agregando clases sin tocar código existente.
+- **Cumple DIP** (*Dependency Inversion Principle*): el cliente depende de la abstracción (`PizzaStore`), no de la factory concreta.
 
-## 📖 Contexto del Problema: La Pizzería de Objectville
+---
 
-El código de este repositorio simula el sistema de `PizzaStore` , una pizzería que necesita gestionar diferentes tipos y estilos de pizza (por ejemplo, estilo Nueva York vs. estilo Chicago). A medida que el negocio crece, el código original que usaba `if/else` para crear cada tipo de pizza se vuelve insostenible.
+## Decisiones de Diseño: Extensión del Patrón *Abstract Factory*
 
-Tu tarea será explorar y extender las soluciones implementadas, que utilizan patrones de fábrica para hacer el sistema más flexible y mantenible.
+### Problema del *Factory Method*
+El *Factory Method* permite crear nuevos estilos de pizza (`Veggie`, `Pepperoni`, etc.),  
+pero **no asegura la consistencia de ingredientes por región**:
+- Persiste un acoplamiento indirecto entre `Pizza` y los ingredientes concretos.
 
------
+### Solución con *Abstract Factory*
+- Se crearon las clases de ingredientes (`Dough`, `Sauce`, `Cheese`, `Pepperoni`, `Clams`, `Pepper`, `Mushroom`, `Onion`, `Garlic`).
+- La interfaz `PizzaIngredientFactory` se extendió con métodos para crear estos ingredientes.
+- Cada pizza concreta (`VeggiePizza`, `PepperoniPizza`, etc.) implementa `prepare()` usando la factory de ingredientes, en lugar de instanciar ingredientes directamente.
 
-## 📂 Estructura del Repositorio
+#### Beneficios
+- Las pizzas dependen de la **interfaz** `PizzaIngredientFactory`, no de clases concretas.
+- Se asegura la **consistencia regional**:  
+  - `NYPizzaIngredientFactory` → ingredientes de NY.  
+  - `ChicagoPizzaIngredientFactory` → ingredientes de Chicago.
+- Diseño **robusto y extensible**: futuras variedades de ingredientes y pizzas se pueden añadir sin modificar código existente.
 
-El código está organizado en módulos que representan la evolución del diseño:
+---
 
-  * `factory/simple_factory`: Una implementación básica que encapsula la creación de pizzas en una clase `SimplePizzaFactory`[cite: 2033]. Aunque no es un patrón GoF formal, es un excelente punto de partida.
-  * `factory/factory_method`: Una evolución donde la responsabilidad de la creación se delega a subclases (`NYPizzaStore`, `ChicagoPizzaStore`) a través de un "método fábrica" abstracto.
-  * `factory/abstract_factory`: La solución más avanzada, que gestiona la creación de **familias de objetos relacionados** (ingredientes) para garantizar la consistencia regional.
+## Decisiones de Diseño de *Testing*
 
------
+- **Probar el contrato, no la implementación interna**: verificamos que `order_pizza(kind)` devuelva un `Pizza` del subtipo correcto y que, tras `prepare()`, los atributos de ingredientes queden seteados conforme a la factory de su región.
 
-## 🚀 Consigna del Trabajo Práctico
+### Factory Method
+- Se testea que cada `PizzaStore` cree sus propios productos:  
+  - `NYPizzaStore` → pizzas NY.  
+  - `ChicagoPizzaStore` → pizzas Chicago.
+- Se valida que un `kind` desconocido levante `ValueError`.
 
-### Paso 0: Exploración Inicial
+### Abstract Factory
+- Se valida la **consistencia regional**: los ingredientes provienen de la factory de esa región, comparando con lo que devuelve `NYPizzaIngredientFactory` o `ChicagoPizzaIngredientFactory`.
+- Para las verduras (onion, garlic, mushroom, pepper), se testean cada atributo por separado (no como un objeto `Veggies` agrupado).
 
-Antes de escribir código, familiarízate con el estado final del proyecto. Ejecuta cada una de las implementaciones para ver cómo funcionan.
+### Inyección de Dependencias (DIP)
+- Las pizzas reciben la fábrica de ingredientes desde afuera.  
+  Esto garantiza que usan los objetos proporcionados por la factory inyectada y no crean dependencias internas, permitiendo testear su comportamiento de forma aislada.
 
-```bash
-# Ejecuta la versión con Simple Factory
-python -m factory.simple_factory.main
+---
 
-# Ejecuta la versión con Factory Method
-python -m factory.factory_method.main
-
-# Ejecuta la versión con Abstract Factory
-python -m factory.abstract_factory.main
-```
-
-**Analiza la salida de cada comando.** Nota las diferencias en la preparación y los ingredientes entre las pizzas de Nueva York y Chicago en la versión final (`abstract_factory`).
-
-### Paso 1: Extender el Patrón Factory Method
-
-La pizzería quiere ampliar su menú. Tu primera tarea es agregar las variedades `VeggiePizza` y `PepperoniPizza` al sistema que usa **Factory Method**.
-
-1.  **Crea las clases de producto concretas:**
-
-      * En `factory/factory_method/pizzas.py`, crea las clases `NYStyleVeggiePizza`, `NYStylePepperoniPizza`, `ChicagoStyleVeggiePizza` y `ChicagoStylePepperoniPizza`.
-      * Inspírate en las clases `...CheesePizza` existentes para definir sus ingredientes (masa, salsa, toppings).
-
-2.  **Actualiza los Concrete Creators:**
-
-      * En `factory/factory_method/stores.py`, modifica los métodos `create_pizza` de `NYPizzaStore` y `ChicagoPizzaStore` para que puedan instanciar las nuevas variedades de pizza cuando se les pasa el `kind` "veggie" o "pepperoni".
-
-3.  **Verifica tu implementación:**
-
-      * Modifica `factory/factory_method/main.py` para ordenar las nuevas pizzas y comprueba que se crean correctamente.
-
-### Paso 2: Extender el Patrón Abstract Factory
-
-Ahora, harás lo mismo pero en la versión más compleja, que utiliza **Abstract Factory** para gestionar los ingredientes. El objetivo es asegurar que las nuevas pizzas también usen ingredientes consistentes con su región.
-
-1.  **Define los nuevos productos de ingredientes:**
-
-      * En `factory/abstract_factory/ingredients.py`, crea las clases para los nuevos ingredientes que necesitarás, como `Veggies` y `Pepperoni` (puedes crear clases abstractas y luego concretas como `Onion`, `Mushroom`, `SlicedPepperoni`, etc.).
-
-2.  **Actualiza la interfaz de la fábrica abstracta:**
-
-      * En el mismo archivo, agrega nuevos métodos abstractos a `PizzaIngredientFactory` para crear los nuevos tipos de ingredientes (ej: `create_veggies()` y `create_pepperoni()`).
-
-3.  **Actualiza las fábricas concretas:**
-
-      * Implementa los nuevos métodos en `NYPizzaIngredientFactory` y `ChicagoPizzaIngredientFactory`, devolviendo las familias de ingredientes correctas para cada región.
-
-4.  **Crea las nuevas clases de Pizza:**
-
-      * En `factory/abstract_factory/pizzas.py`, crea las clases `VeggiePizza` y `PepperoniPizza`.
-      * **Punto clave:** Su método `prepare()` debe usar la `ingredient_factory` que reciben en el constructor para obtener los ingredientes, de la misma forma que lo hacen `CheesePizza` y `ClamPizza`.
-
-5.  **Actualiza los `PizzaStore`:**
-
-      * Finalmente, en `factory/abstract_factory/store.py`, modifica `NYPizzaStore` y `ChicagoPizzaStore` para que puedan crear instancias de `VeggiePizza` y `PepperoniPizza`.
-
-### Paso 3: Pruebas Unitarias
-
-La calidad es clave en Objectville. Debes escribir pruebas para asegurar que el sistema funciona como se espera.
-
-1.  **Crea un archivo de pruebas:** Por ejemplo, `factory/abstract_factory/test_pizzas.py`.
-
-2.  **Escribe entre 3 y 5 pruebas** que verifiquen los siguientes escenarios en la implementación de **Abstract Factory**:
-
-      * Que `NYPizzaStore` efectivamente crea una pizza de tipo `NYStyle...`.
-      * Que `ChicagoPizzaStore` crea una pizza de tipo `ChicagoStyle...`.
-      * Que una pizza de queso de NY (`CheesePizza` creada por `NYPizzaStore`) contiene los ingredientes correctos de NY (ej: `Thin Crust Dough`).
-      * Que una pizza de almejas de Chicago (`ClamPizza` creada por `ChicagoPizzaStore`) contiene los ingredientes correctos de Chicago (ej: `Frozen Clams`).
-
-    **Pista para las pruebas:** Puedes instanciar una tienda, ordenar una pizza y luego usar `isinstance` para verificar el tipo de los ingredientes.
-
-    ```python
-    # Ejemplo de esqueleto de prueba con pytest
-    from .store import NYPizzaStore
-    from .ingredients import ThinCrustDough
-
-    def test_ny_cheese_pizza_has_correct_dough():
-        # Arrange
-        store = NYPizzaStore()
-        # Act
-        pizza = store.order_pizza("cheese")
-        # Assert
-        assert isinstance(pizza.dough, ThinCrustDough)
-    ```
-
------
-
-## 📦 Formato de Entrega
-
-1.  Realiza un **fork** de este repositorio.
-2.  Trabaja en tu fork, haciendo commits a medida que completas cada paso.
-3.  En tu propio `README.md`, escribe una breve sección (`## Decisiones de Diseño`) explicando las decisiones que tomaste y cualquier desafío que encontraste.
-4.  La entrega final será el enlace a tu repositorio de GitHub.
-
-**¡Mucha suerte y a codificar\!**
