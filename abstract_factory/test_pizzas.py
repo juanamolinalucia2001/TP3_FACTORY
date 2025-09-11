@@ -46,3 +46,24 @@ def test_ny_veggie_pizza_ingredients():
     assert isinstance(pizza.garlic, type(factory.create_garlic()))
     assert isinstance(pizza.mushroom, type(factory.create_mushroom()))
     assert isinstance(pizza.pepper, type(factory.create_pepper()))
+
+# Test de error al ordenar pizzas fuera del menu
+def test_pizza_kind_error():
+    ny_store = NYPizzaStore()
+    chicago_store = ChicagoPizzaStore()
+    with pytest.raises(ValueError, match="No NY pizza for kind: Caprese"):
+        ny_store.order_pizza("Caprese")
+    with pytest.raises(ValueError, match="No Chicago pizza for kind: Caprese"):
+        chicago_store.order_pizza("Caprese")
+
+# Test de comparacion de pizzas e ingredientes de diferentes tiendas
+def test_compare_ny_pizza_with_chicago_pizza():
+    ny_store = NYPizzaStore()
+    chicago_store = ChicagoPizzaStore()
+    ny_pizza = ny_store.order_pizza("cheese")
+    chicago_pizza = chicago_store.order_pizza("cheese")
+    # Comparamos que tienen nombres distintos
+    assert ny_pizza.name != chicago_pizza.name
+    assert ny_pizza.dough.name != chicago_pizza.dough.name
+    assert ny_pizza.sauce.name != chicago_pizza.sauce.name
+    assert ny_pizza.cheese.name != chicago_pizza.cheese.name
